@@ -12,7 +12,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .header h1{font-size:20px;font-weight:700;letter-spacing:-.3px}
 .header .brand{font-size:11px;opacity:.7;letter-spacing:1px;text-transform:uppercase}
-.stats{font-size:12px;opacity:.85;margin-bottom:12px}
+.stats{font-size:12px;opacity:.85;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.view-toggle{display:flex;background:rgba(255,255,255,.15);border-radius:6px;overflow:hidden}
+.view-btn{padding:5px 14px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:transparent;color:rgba(255,255,255,.6);transition:all .15s;letter-spacing:.3px}
+.view-btn.active{background:rgba(255,255,255,.25);color:#fff;border-radius:6px}
 .search-wrap{position:relative}
 .search-wrap input{width:100%;padding:10px 14px 10px 36px;border:none;border-radius:8px;font-size:15px;background:rgba(255,255,255,.15);color:#fff;outline:none;transition:background .2s}
 .search-wrap input::placeholder{color:rgba(255,255,255,.5)}
@@ -78,7 +81,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   <div class="header-top">
     <div><h1>eTail West 2026</h1><div class="brand">PebblePost Exec Support</div></div>
   </div>
-  <div class="stats" id="stats">40 companies &middot; 55 contacts</div>
+  <div class="stats"><span id="stats">40 companies &middot; 55 contacts</span><div class="view-toggle"><button class="view-btn active" data-view="company">Companies</button><button class="view-btn" data-view="people">People</button></div></div>
   <div class="search-wrap">
     <span class="search-icon">&#128269;</span>
     <input type="text" id="search" placeholder="Search name, company, title, or context..." autocomplete="off">
@@ -121,6 +124,7 @@ const FLAG_ICONS={"priority":"\u2B50","met":"\u2705","help":"\uD83E\uDD1D"};
 let activeSellers=new Set();
 let activeFlags=new Set();
 let searchTerm="";
+let viewMode="company";
 let flags=JSON.parse(localStorage.getItem("etail-flags")||"{}");
 
 function saveFlags(){localStorage.setItem("etail-flags",JSON.stringify(flags))}
@@ -157,10 +161,7 @@ function matchFilters(entry){
   return matchSearch(entry,searchTerm);
 }
 
-function render(){
-  const container=document.getElementById("cards");
-  const emptyEl=document.getElementById("empty");
-  const statsEl=document.getElementById("stats");
+function renderCompanyView(){
   let html="";
   let companyCount=0,contactCount=0;
   
@@ -180,28 +181,7 @@ function render(){
     html+=`</div>`;
     
     for(const c of entry.contacts){
-      const fk=flagKey(c.name,entry.company);
-      const flag=flags[fk]||null;
-      const flagClass=flag||"";
-      const flagIcon=flag?FLAG_ICONS[flag]:"&#9873;";
-      const ac=avatarColor(c.name);
-      const ci=getInitials(c.name);
-      const photoKey=c.name+"@"+entry.company;
-      const photo=PHOTOS[photoKey];
-      
-      html+=`<div class="contact">`;
-      if(photo){
-        html+=`<div class="avatar"><img src="photos/${photo}" alt="${c.name}" onerror="this.parentElement.innerHTML='${ci}';this.parentElement.style.background='${ac}'"></div>`;
-      }else{
-        html+=`<div class="avatar" style="background:${ac}">${ci}</div>`;
-      }
-      html+=`<div class="contact-info"><div class="contact-name">${c.name}</div><div class="contact-title">${c.title}</div></div>`;
-      html+=`<div class="contact-actions">`;
-      if(c.linkedin){
-        html+=`<a href="${c.linkedin}" target="_blank" rel="noopener" class="li-btn" title="LinkedIn">in</a>`;
-      }
-      html+=`<button class="flag-btn ${flagClass}" data-key="${fk}" title="Flag contact">${flagIcon}</button>`;
-      html+=`</div></div>`;
+      html+=renderContact(c,entry);
     }
     
     if(entry.context.length>0){
@@ -214,10 +194,93 @@ function render(){
     }
     html+=`</div>`;
   }
+  return{html,companyCount,contactCount};
+}
+
+function renderPeopleView(){
+  let html="";
+  let people=[];
+  for(const entry of DATA){
+    if(!matchFilters(entry))continue;
+    for(const c of entry.contacts){
+      people.push({contact:c,entry});
+    }
+  }
+  people.sort((a,b)=>a.contact.name.localeCompare(b.contact.name));
+  
+  for(const{contact:c,entry}of people){
+    const sellerColor=SELLER_COLORS[entry.seller]||"#666";
+    html+=`<div class="card"><div class="contact" style="border-bottom:none">`;
+    const ac=avatarColor(c.name);
+    const ci=getInitials(c.name);
+    const photoKey=c.name+"@"+entry.company;
+    const photo=PHOTOS[photoKey];
+    if(photo){
+      html+=`<div class="avatar"><img src="photos/${photo}" alt="${c.name}" onerror="this.parentElement.innerHTML='${ci}';this.parentElement.style.background='${ac}'"></div>`;
+    }else{
+      html+=`<div class="avatar" style="background:${ac}">${ci}</div>`;
+    }
+    html+=`<div class="contact-info"><div class="contact-name">${c.name}</div><div class="contact-title">${c.title}</div><div style="font-size:11px;margin-top:2px"><span style="color:var(--blue);font-weight:600">${entry.company}</span> <span class="seller-badge" style="background:${sellerColor};font-size:9px;vertical-align:middle">${entry.seller}</span></div></div>`;
+    html+=`<div class="contact-actions">`;
+    const fk=flagKey(c.name,entry.company);
+    const flag=flags[fk]||null;
+    const flagClass=flag||"";
+    const flagIcon=flag?FLAG_ICONS[flag]:"&#9873;";
+    if(c.linkedin){
+      html+=`<a href="${c.linkedin}" target="_blank" rel="noopener" class="li-btn" title="LinkedIn">in</a>`;
+    }
+    html+=`<button class="flag-btn ${flagClass}" data-key="${fk}" title="Flag contact">${flagIcon}</button>`;
+    html+=`</div></div>`;
+    if(entry.context.length>0){
+      html+=`<div class="context-toggle" onclick="this.nextElementSibling.classList.toggle('collapsed')">&#9660; Context</div>`;
+      html+=`<div class="context collapsed"><ul>`;
+      for(const ctx of entry.context){html+=`<li>${ctx}</li>`}
+      html+=`</ul></div>`;
+    }
+    html+=`</div>`;
+  }
+  return{html,companyCount:new Set(people.map(p=>p.entry.company)).size,contactCount:people.length};
+}
+
+function renderContact(c,entry){
+  let html="";
+  const fk=flagKey(c.name,entry.company);
+  const flag=flags[fk]||null;
+  const flagClass=flag||"";
+  const flagIcon=flag?FLAG_ICONS[flag]:"&#9873;";
+  const ac=avatarColor(c.name);
+  const ci=getInitials(c.name);
+  const photoKey=c.name+"@"+entry.company;
+  const photo=PHOTOS[photoKey];
+  html+=`<div class="contact">`;
+  if(photo){
+    html+=`<div class="avatar"><img src="photos/${photo}" alt="${c.name}" onerror="this.parentElement.innerHTML='${ci}';this.parentElement.style.background='${ac}'"></div>`;
+  }else{
+    html+=`<div class="avatar" style="background:${ac}">${ci}</div>`;
+  }
+  html+=`<div class="contact-info"><div class="contact-name">${c.name}</div><div class="contact-title">${c.title}</div></div>`;
+  html+=`<div class="contact-actions">`;
+  if(c.linkedin){
+    html+=`<a href="${c.linkedin}" target="_blank" rel="noopener" class="li-btn" title="LinkedIn">in</a>`;
+  }
+  html+=`<button class="flag-btn ${flagClass}" data-key="${fk}" title="Flag contact">${flagIcon}</button>`;
+  html+=`</div></div>`;
+  return html;
+}
+
+function render(){
+  const container=document.getElementById("cards");
+  const emptyEl=document.getElementById("empty");
+  const statsEl=document.getElementById("stats");
+  
+  const result=viewMode==="people"?renderPeopleView():renderCompanyView();
+  const{html,companyCount,contactCount}=result;
   
   container.innerHTML=html;
-  emptyEl.style.display=companyCount===0?"block":"none";
-  statsEl.textContent=`${companyCount} ${companyCount===1?"company":"companies"} \u00B7 ${contactCount} contacts`;
+  emptyEl.style.display=contactCount===0?"block":"none";
+  statsEl.textContent=viewMode==="people"
+    ?`${contactCount} people \u00B7 ${companyCount} companies`
+    :`${companyCount} ${companyCount===1?"company":"companies"} \u00B7 ${contactCount} contacts`;
   
   container.querySelectorAll(".flag-btn").forEach(btn=>{
     btn.addEventListener("click",function(e){
@@ -252,6 +315,15 @@ document.querySelectorAll(".flag-chip").forEach(chip=>{
     const flag=this.dataset.flag;
     if(activeFlags.has(flag)){activeFlags.delete(flag);this.classList.remove("active")}
     else{activeFlags.add(flag);this.classList.add("active")}
+    render();
+  });
+});
+
+document.querySelectorAll(".view-btn").forEach(btn=>{
+  btn.addEventListener("click",function(){
+    viewMode=this.dataset.view;
+    document.querySelectorAll(".view-btn").forEach(b=>b.classList.remove("active"));
+    this.classList.add("active");
     render();
   });
 });
