@@ -18,15 +18,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .search-wrap input::placeholder{color:rgba(255,255,255,.5)}
 .search-wrap input:focus{background:rgba(255,255,255,.25)}
 .search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);opacity:.5;font-size:16px}
-.filters{padding:10px 20px;background:#fff;border-bottom:1px solid var(--divider);overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
-.chip{display:inline-block;padding:6px 14px;margin:3px 4px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;border:1.5px solid var(--divider);background:#fff;color:var(--gray-dark);user-select:none}
+.filters{padding:10px 16px;background:#fff;border-bottom:1px solid var(--divider)}
+.chip{display:inline-block;padding:6px 12px;margin:3px 3px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;border:1.5px solid var(--divider);background:#fff;color:var(--gray-dark);user-select:none}
 .chip:hover{border-color:var(--blue);color:var(--blue)}
 .chip.active{background:var(--blue);color:#fff;border-color:var(--blue)}
 .chip.flag-chip{border-style:dashed}
 .chip.flag-chip.active{border-style:solid}
-.filter-row{margin-bottom:4px}
-.filter-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--gray-dark);margin:0 8px;opacity:.6}
-.clear-btn{display:inline-block;padding:6px 12px;margin:3px 4px;border-radius:20px;font-size:11px;cursor:pointer;border:1.5px solid #e74c3c;color:#e74c3c;background:transparent;font-weight:600;transition:all .15s}
+.filter-row{margin-bottom:6px;display:flex;flex-wrap:wrap;align-items:center;gap:2px}
+.filter-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--gray-dark);margin-right:4px;opacity:.6;flex-shrink:0}
+.clear-btn{display:inline-block;padding:6px 12px;margin:3px 3px;border-radius:20px;font-size:11px;cursor:pointer;border:1.5px solid #e74c3c;color:#e74c3c;background:transparent;font-weight:600;transition:all .15s}
 .clear-btn:hover{background:#e74c3c;color:#fff}
 .cards{padding:12px;max-width:800px;margin:0 auto}
 .card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden;transition:transform .15s,box-shadow .15s;animation:fadeIn .3s ease}
