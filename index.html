@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>eTail West 2026 | PebblePost Dossier</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--blue:#1B2CCC;--navy:#000A62;--cyan:#34F3EE;--purple:#9B51E0;--gray-light:#F8F9FA;--gray-dark:#626171;--divider:#D1D5F5;--radius:12px;--shadow:0 2px 8px rgba(0,10,98,.08)}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f2f8;color:#1a1a2e;min-height:100vh;-webkit-font-smoothing:antialiased}
+.header{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:16px 20px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,10,98,.2)}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.header h1{font-size:20px;font-weight:700;letter-spacing:-.3px}
+.header .brand{font-size:11px;opacity:.7;letter-spacing:1px;text-transform:uppercase}
+.stats{font-size:12px;opacity:.85;margin-bottom:12px}
+.search-wrap{position:relative}
+.search-wrap input{width:100%;padding:10px 14px 10px 36px;border:none;border-radius:8px;font-size:15px;background:rgba(255,255,255,.15);color:#fff;outline:none;transition:background .2s}
+.search-wrap input::placeholder{color:rgba(255,255,255,.5)}
+.search-wrap input:focus{background:rgba(255,255,255,.25)}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);opacity:.5;font-size:16px}
+.filters{padding:10px 20px;background:#fff;border-bottom:1px solid var(--divider);overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+.chip{display:inline-block;padding:6px 14px;margin:3px 4px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;border:1.5px solid var(--divider);background:#fff;color:var(--gray-dark);user-select:none}
+.chip:hover{border-color:var(--blue);color:var(--blue)}
+.chip.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.chip.flag-chip{border-style:dashed}
+.chip.flag-chip.active{border-style:solid}
+.filter-row{margin-bottom:4px}
+.filter-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--gray-dark);margin:0 8px;opacity:.6}
+.clear-btn{display:inline-block;padding:6px 12px;margin:3px 4px;border-radius:20px;font-size:11px;cursor:pointer;border:1.5px solid #e74c3c;color:#e74c3c;background:transparent;font-weight:600;transition:all .15s}
+.clear-btn:hover{background:#e74c3c;color:#fff}
+.cards{padding:12px;max-width:800px;margin:0 auto}
+.card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden;transition:transform .15s,box-shadow .15s;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card-header{display:flex;align-items:center;padding:14px 16px;gap:12px;border-bottom:1px solid var(--divider)}
+.logo-wrap{width:44px;height:44px;border-radius:10px;overflow:hidden;flex-shrink:0;background:var(--gray-light);display:flex;align-items:center;justify-content:center}
+.logo-wrap img{width:100%;height:100%;object-fit:contain;padding:4px}
+.logo-fallback{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
+.company-info{flex:1;min-width:0}
+.company-name{font-size:16px;font-weight:700;color:var(--navy)}
+.seller-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;color:#fff;margin-top:2px}
+.contact{display:flex;align-items:flex-start;padding:12px 16px;gap:10px;border-bottom:1px solid #f0f0f5}
+.contact:last-child{border-bottom:none}
+.avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;margin-top:2px}
+.contact-info{flex:1;min-width:0}
+.contact-name{font-size:14px;font-weight:600;color:#1a1a2e}
+.contact-title{font-size:12px;color:var(--gray-dark);margin-top:1px}
+.contact-actions{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.li-btn{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:6px;background:#0077B5;color:#fff;text-decoration:none;font-size:13px;font-weight:700;transition:opacity .15s}
+.li-btn:hover{opacity:.85}
+.flag-btn{width:30px;height:30px;border-radius:6px;border:1.5px solid var(--divider);background:#fff;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0}
+.flag-btn:hover{border-color:var(--blue);background:var(--gray-light)}
+.flag-btn.priority{background:#FFF3E0;border-color:#FF9800}
+.flag-btn.met{background:#E8F5E9;border-color:#4CAF50}
+.flag-btn.help{background:#E3F2FD;border-color:#2196F3}
+.context{padding:8px 16px 14px;background:#fafaff}
+.context-toggle{display:none;font-size:12px;font-weight:600;color:var(--blue);padding:8px 16px;cursor:pointer;background:#fafaff;user-select:none}
+.context ul{list-style:none;padding:0}
+.context li{font-size:12px;color:var(--gray-dark);padding:3px 0;padding-left:14px;position:relative;line-height:1.5}
+.context li::before{content:'';position:absolute;left:0;top:9px;width:5px;height:5px;border-radius:50%;background:var(--divider)}
+.empty{text-align:center;padding:60px 20px;color:var(--gray-dark)}
+.empty-icon{font-size:48px;margin-bottom:12px}
+.empty p{font-size:14px}
+@media(max-width:600px){
+  .context-toggle{display:block}
+  .context.collapsed{display:none}
+  .card-header{padding:12px 14px}
+  .contact{padding:10px 14px}
+}
+@media(min-width:601px){
+  .context-toggle{display:none}
+  .context{display:block!important}
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-top">
+    <div><h1>eTail West 2026</h1><div class="brand">PebblePost Exec Support</div></div>
+  </div>
+  <div class="stats" id="stats">40 companies &middot; 55 contacts</div>
+  <div class="search-wrap">
+    <span class="search-icon">&#128269;</span>
+    <input type="text" id="search" placeholder="Search name, company, title, or context..." autocomplete="off">
+  </div>
+</div>
+<div class="filters" id="filters">
+  <div class="filter-row">
+    <span class="filter-label">Seller</span>
+    <span class="chip seller-chip" data-seller="Mentzer">Mentzer</span>
+    <span class="chip seller-chip" data-seller="Jack">Jack</span>
+    <span class="chip seller-chip" data-seller="Jessica">Jessica</span>
+    <span class="chip seller-chip" data-seller="KJ">KJ</span>
+    <span class="chip seller-chip" data-seller="Eddie">Eddie</span>
+    <span class="chip seller-chip" data-seller="Dan V">Dan V</span>
+    <span class="chip seller-chip" data-seller="Steve Jones">Steve Jones</span>
+  </div>
+  <div class="filter-row">
+    <span class="filter-label">Flags</span>
+    <span class="chip flag-chip" data-flag="priority">&#11088; Priority</span>
+    <span class="chip flag-chip" data-flag="met">&#9989; Met</span>
+    <span class="chip flag-chip" data-flag="help">&#129309; Help</span>
+    <button class="clear-btn" id="clearAll">Clear All</button>
+  </div>
+</div>
+<div class="cards" id="cards"></div>
+<div class="empty" id="empty" style="display:none">
+  <div class="empty-icon">&#128270;</div>
+  <p>No matches found. Try a different search or clear filters.</p>
+</div>
+
+<script>
+const DATA=[{"id":1,"seller":"Mentzer","company":"Avocado Mattress","domain":"avocadogreenmattress.com","contacts":[{"name":"Mark Abrials","title":"CMO & Co-Founder","linkedin":"https://www.linkedin.com/in/markabrials/"},{"name":"Vy Nguyen","title":"Co-CEO & Co-Founder","linkedin":"https://www.linkedin.com/in/vy-nguyen-830400107/"}],"context":["Coming to Workshop Dinner so just be nice to him and Vy Nguyen when you see them"]},{"id":2,"seller":"Mentzer","company":"Ariat","domain":"ariat.com","contacts":[{"name":"Sam Hopkins","title":"Digital Growth Consultant (ex-Senior Digital Media Manager @ Ariat)","linkedin":"https://www.linkedin.com/in/samantha-cole-hopkins/"}],"context":["Coming to Delgado","Working with her to socialize us across Ariat who is with LS Direct & Tatari"]},{"id":3,"seller":"Mentzer","company":"Duluth Trading Company","domain":"duluthtrading.com","contacts":[{"name":"Garth Weber","title":"SVP, Chief Brand & Marketing Officer","linkedin":"https://www.linkedin.com/in/garth-weber-52618538/"}],"context":["Need to just have a conversation with him","We've been to the proposal phase with Duluth in the past","Speaking same day as Jacob Ross"]},{"id":4,"seller":"Mentzer","company":"Sur La Table","domain":"surlatable.com","contacts":[{"name":"Kristin Flo Perret","title":"VP of Brand","linkedin":"https://www.linkedin.com/in/kristin-flor-perret-2652b22/"},{"name":"Elton X. Graham","title":"CMO","linkedin":"https://www.linkedin.com/in/eltonxgraham/"}],"context":["CSC Generation is holding company (OKL) — muddies the waters with Sur La Table","Both speakers on Wednesday","Kristin is a Cooperstein connection","Find out Elton's middle name 'X'"]},{"id":5,"seller":"Mentzer","company":"PrAna","domain":"prana.com","contacts":[{"name":"Joe Brazell","title":"VP Customer Growth & Experience","linkedin":"https://www.linkedin.com/in/joe-b-b44b1a20/"}],"context":["We've met other people at eTail Connect but Joe would be great!"]},{"id":6,"seller":"Mentzer","company":"Zumiez","domain":"zumiez.com","contacts":[{"name":"Erin Wendte","title":"EVP Consumer Teams","linkedin":"https://www.linkedin.com/in/erin-wendte/"},{"name":"Josh Meyers","title":"Marketing Director","linkedin":"https://www.linkedin.com/in/josh-meyers-3b10904/"},{"name":"Nate Potts","title":"Digital Marketing Manager","linkedin":"https://www.linkedin.com/in/natepotts/"}],"context":["Any contact would be great!","Online + In-Store transactions should make for excellent performance","Connection to a board member but intro to VP of Marketing has gone dark","Erin speaking Wed 9:35am"]},{"id":7,"seller":"Jack","company":"Purple","domain":"purple.com","contacts":[{"name":"Noah Jacobs","title":"Sr Director, Marketing Strategy & Performance","linkedin":null},{"name":"Lyndsay Cordell","title":"SEO Manager","linkedin":null}],"context":["VP had to last minute cancel his trip to eTail","Team focused on revitalizing marketing strategy — less focus on Google, more performant overall","Specifically interested in site visitor retargeting use cases","Strong vertical (Leesa, Helix, Bob's and Casper, Purple, Eight Sleep prev.)"]},{"id":8,"seller":"Jack","company":"Living Spaces","domain":"livingspaces.com","contacts":[{"name":"Pete Franco","title":"President","linkedin":null}],"context":["Strong relationship with programmatic team from time at Criteo","Living Spaces has longstanding relationship with LS Direct — seeing 15x iROAS currently"]},{"id":9,"seller":"Jack","company":"QVC","domain":"qvc.com","contacts":[{"name":"Andrew Rickert","title":"VP Digital Marketing","linkedin":null},{"name":"Brian Beitler","title":"Chief Business Dev Officer","linkedin":null}],"context":["Brian speaking on Mainstage Keynote Tues at 8:45am","Our success with JTV paired with QVC's struggles with linear declines make PDM enticing","Lead brand under QVC Group (also owns HSN, Frontgate, Ballard Designs, Garnet Hill, Grandin Road)"]},{"id":10,"seller":"Jack","company":"Reef","domain":"reef.com","contacts":[{"name":"Brandon Maskell","title":"CRO","linkedin":null}],"context":["Was going to join us for dinner but calendar filled up","Friends and former colleagues with TaylorMade group joining dinner Tuesday","Interested in meeting for a drink in/around the hotel in lieu of dinner"]},{"id":11,"seller":"Jessica","company":"Crocs","domain":"crocs.com","contacts":[{"name":"Feliz Papich","title":"SVP, Digital Technology","linkedin":"https://www.linkedin.com/in/felizfrancescapapich/"},{"name":"Brianne Calandra","title":"VP Digital Technology","linkedin":"https://www.linkedin.com/in/briannekc/"},{"name":"Tommy Kowalski","title":"VP, Digital Commerce","linkedin":"https://www.linkedin.com/in/tommy-kowalski-81154418/"}],"context":["Feliz speaking on Jacob's panel","AOV and iROAS important metrics for Crocs — mention higher AOV driven for COS (also on the panel)","Remind Brianne and Tommy that Feliz is on Jacob's panel","Talk about the work we do for Rothy's"]},{"id":12,"seller":"Jessica","company":"ButcherBox","domain":"butcherbox.com","contacts":[{"name":"Reba Hatcher","title":"Chief Commercial Officer","linkedin":"https://www.linkedin.com/in/rebahatcher/"},{"name":"David Rodrigues","title":"Director of Retention, Churn and Loyalty","linkedin":"https://www.linkedin.com/in/davidjrodrigues/"}],"context":["Reba speaking about loyalty and growth","Recently expanded beyond subscription model — sells in Target","Mention our work with Hello Fresh","Help with customer retention (big focus for them) in addition to acquisition"]},{"id":13,"seller":"Jessica","company":"Uniqlo","domain":"uniqlo.com","contacts":[{"name":"David Lorango","title":"Director of Digital Marketing","linkedin":"https://www.linkedin.com/in/davidlorango/"}],"context":["Drive to in-store — opened cafes in select locations","Mention work we do with Gap and COS"]},{"id":14,"seller":"Jessica","company":"Allbirds","domain":"allbirds.com","contacts":[{"name":"Scott Byrer","title":"Former Director of Customer Retention","linkedin":"https://www.linkedin.com/in/sbyrer/"},{"name":"Sarah Grosz","title":"Influencer Marketing Lead","linkedin":"https://www.linkedin.com/in/sarahgrosz/"}],"context":["Scott recently left Allbirds — let's try to help him land somewhere new","Scott speaking about email and SMS personalization","Sarah speaking about finding ROI from influencer campaigns","Get lay of the land re: recent executive changes, store closings, doubling down on ecommerce"]},{"id":15,"seller":"Jessica","company":"REI","domain":"rei.com","contacts":[{"name":"Kristin Shane","title":"Chief Merchandising Officer","linkedin":"https://www.linkedin.com/in/kristinshane/"},{"name":"Max Green","title":"Director of Performance Marketing and Analytics","linkedin":"https://www.linkedin.com/in/maxjgreen/"}],"context":["Kristin speaking about the customer journey","Max speaking about creating a winning media plan","Both attending Delgado event","REI going through digital transformation — closing several stores in 2026"]},{"id":16,"seller":"Jessica","company":"Men's Wearhouse / Tailored Brands","domain":"menswearhouse.com","contacts":[{"name":"Ali Haris","title":"Director of AI Marketing Innovation, Organic Growth and AEO","linkedin":"https://www.linkedin.com/in/aharis/"}],"context":["Speaking about AI Discovery and Search","Men's Wearhouse is a former client — thank him for that business","Open winback opportunity for PDM (working with Gigi)","Open CTV opportunity going through agency Ovative"]},{"id":17,"seller":"Jessica","company":"Unique Vintage","domain":"uniquevintage.com","contacts":[{"name":"Rita Zahir","title":"VP Marketing and Ecommerce","linkedin":"https://www.linkedin.com/in/ritazahir/"}],"context":["Speaking about evaluating AI for marketing and ecom","Mention we work with Lulus and Revolve"]},{"id":18,"seller":"Jessica","company":"Harry's","domain":"harrys.com","contacts":[{"name":"Douglas Hwang","title":"VP, Global Head of Digital Commerce","linkedin":"https://www.linkedin.com/in/douglashwang/"}],"context":["Speaking about driving value for a price conscious consumer","Mention work with men's brands (Men's Wearhouse, Rhone)","Mention skincare brands (tarte, La Roche Posay)"]},{"id":19,"seller":"Jessica","company":"Mejuri","domain":"mejuri.com","contacts":[{"name":"Rohit Nathany","title":"CPTO & Growth Marketing","linkedin":"https://www.linkedin.com/in/rohitnathany/"}],"context":["Talking about Agentic AI","Coming to dinner on Wednesday","Thank him for his continued partnership"]},{"id":20,"seller":"Jessica","company":"Stitch Fix","domain":"stitchfix.com","contacts":[{"name":"Noah Zamansky","title":"VP of Product and Client Experience","linkedin":"https://www.linkedin.com/in/nzamansky/"}],"context":["Speaking about the modern, messy path to purchase and funnel collapse","Mention we work with partner brands: Rhone, Rebag, Gap"]},{"id":21,"seller":"KJ","company":"JD Finish Line","domain":"finishline.com","contacts":[{"name":"Henry Spear","title":"SVP, Digital","linkedin":null}],"context":["Current DM — pushing for CTV test and large PDM renewal","Mainstage speaker with Affirm & Newegg on Tues","Track 2: Unlocking Incremental Growth with DoorDash on Wed","KJ having lunch with him on Wed","Please say hello and thank him for their partnership"]},{"id":22,"seller":"KJ","company":"Blu Dot","domain":"bludot.com","contacts":[{"name":"Caroline Covington","title":"VP, Digital","linkedin":null}],"context":["Signed with us this month / kickstart this week","Former THUMA CMO","Please say hello and thank her for their partnership","Casual CTV plug if there's an opening"]},{"id":23,"seller":"KJ","company":"Bombas","domain":"bombas.com","contacts":[{"name":"Kate Huyett","title":"GM of eComm & CMO","linkedin":null}],"context":["Haven't yet been able to earn an initial meeting","We should be discussing helping to fuel their growth"]},{"id":24,"seller":"KJ","company":"Coach","domain":"coach.com","contacts":[{"name":"Pooja Chandiramani","title":"VP, Global Media Strategy, Marketing & Analytics","linkedin":null}],"context":["Haven't yet been able to earn an initial meeting","We should be discussing helping to fuel their growth"]},{"id":25,"seller":"KJ","company":"Fashionphile","domain":"fashionphile.com","contacts":[{"name":"Jeff Shim","title":"Head of Digital","linkedin":null}],"context":["Haven't yet been able to earn an initial meeting","We should be discussing helping to fuel their growth"]},{"id":26,"seller":"KJ","company":"Kathy Kuo Home","domain":"kathykuohome.com","contacts":[{"name":"CMO","title":"CMO (name not provided)","linkedin":null}],"context":["Been running with us for a few months","Please say hello and thank him for their partnership","Casual CTV plug if there's an opening","Worked for Bloomingdale's for 14 years previously"]},{"id":27,"seller":"KJ","company":"Manscaped","domain":"manscaped.com","contacts":[{"name":"Stephanie Hinze","title":"VP, Global Direct-to-Consumer Marketing","linkedin":null},{"name":"Dave Estrin","title":"CRO","linkedin":null}],"context":["Haven't yet been able to earn an initial meeting","We should be discussing helping to fuel their growth","Especially Performance CTV"]},{"id":28,"seller":"KJ","company":"Ritual","domain":"ritual.com","contacts":[{"name":"Melissa Garcia","title":"Director of Retention & CRM","linkedin":null}],"context":["Haven't yet been able to earn an initial meeting","Specialty vitamins"]},{"id":29,"seller":"KJ","company":"The North Face","domain":"thenorthface.com","contacts":[{"name":"Erica Hood","title":"Head of Loyalty, Lifecycle and Supports Acquisition Marketing","linkedin":null},{"name":"Paula Evans","title":"Lifecycle Marketing Manager","linkedin":null}],"context":["TOS is in review — excited to start working together","Will be joining us at Delgado","Paula will be a PDM POC","Casual CTV plug if there's an opening","Erica based in Denver, CO; Paula based in Orange County, CA"]},{"id":30,"seller":"Eddie","company":"Lowe's","domain":"lowes.com","contacts":[{"name":"Neelima Sharma","title":"SVP ECommerce","linkedin":null}],"context":["Shaun knows Neelima from Criteo days","Helping with outreach and setting up intro while at eTail","Invited to dinner + party but not confirmed"]},{"id":31,"seller":"Eddie","company":"Marc Jacobs","domain":"marcjacobs.com","contacts":[{"name":"Taylor Jergens","title":"Director of Digital Marketing & Ecommerce","linkedin":null}],"context":["Working through agency Digital Matter — had RFP out for Spring launch","Main POC Colleen Ryan left (worked under CEO Rachel Mack)","Agency intro came from Brian Heiser who worked with PP when at Gap"]},{"id":32,"seller":"Dan V","company":"Helzberg","domain":"helzberg.com","contacts":[{"name":"Bruce Pryor","title":"SVP ECommerce","linkedin":null}],"context":[]},{"id":33,"seller":"Dan V","company":"Ruggable","domain":"ruggable.com","contacts":[{"name":"Lauren Sherman","title":"CMO","linkedin":null}],"context":[]},{"id":34,"seller":"Dan V","company":"FTD","domain":"ftd.com","contacts":[{"name":"Michael Sabia","title":"CMO","linkedin":null}],"context":[]},{"id":35,"seller":"Dan V","company":"Foot Locker","domain":"footlocker.com","contacts":[{"name":"Lora Loesch","title":"Head of Global Digital & Customer Strategy","linkedin":null}],"context":["RTB guest at Delgado"]},{"id":36,"seller":"Steve Jones","company":"Norwegian Cruise Line","domain":"ncl.com","contacts":[{"name":"Jennifer Pintaluba","title":"Vice President, Media & Performance Marketing","linkedin":"https://www.linkedin.com/in/jennifer-pintaluba-641a2b6/"}],"context":[]},{"id":37,"seller":"Steve Jones","company":"Rally House","domain":"rallyhouse.com","contacts":[{"name":"David Barth","title":"VP of Marketing","linkedin":"https://www.linkedin.com/in/david-barth-rally-house/"}],"context":[]},{"id":38,"seller":"Steve Jones","company":"Beyond Inc. (Bed Bath & Beyond)","domain":"bedbathandbeyond.com","contacts":[{"name":"Denny Chen","title":"Senior Director, Performance Marketing","linkedin":"https://www.linkedin.com/in/dennych/"}],"context":[]},{"id":39,"seller":"Steve Jones","company":"Columbia Sportswear","domain":"columbia.com","contacts":[{"name":"Stephanie Jungvirt","title":"Senior Manager, CRM & Loyalty","linkedin":"https://www.linkedin.com/in/stephanie-jungvirt/"}],"context":[]},{"id":40,"seller":"Steve Jones","company":"Goop","domain":"goop.com","contacts":[{"name":"Alexa Ritacco","title":"CMO","linkedin":"https://www.linkedin.com/in/alexaritacco/"},{"name":"Erica Imbrecht","title":"VP, Marketing","linkedin":"https://www.linkedin.com/in/eimbrecht/"}],"context":[]}];
+
+const SELLER_COLORS={"Mentzer":"#1B2CCC","Jack":"#9B51E0","Jessica":"#E91E63","KJ":"#FF9800","Eddie":"#00897B","Dan V":"#5C6BC0","Steve Jones":"#78909C"};
+const AVATAR_COLORS=["#1B2CCC","#9B51E0","#E91E63","#FF9800","#00897B","#5C6BC0","#78909C","#F44336","#3F51B5","#009688","#FF5722","#607D8B"];
+const FLAG_CYCLE=[null,"priority","met","help"];
+const FLAG_ICONS={"priority":"\u2B50","met":"\u2705","help":"\uD83E\uDD1D"};
+
+let activeSellers=new Set();
+let activeFlags=new Set();
+let searchTerm="";
+let flags=JSON.parse(localStorage.getItem("etail-flags")||"{}");
+
+function saveFlags(){localStorage.setItem("etail-flags",JSON.stringify(flags))}
+function flagKey(name,company){return name+"@"+company}
+function getInitials(name){const p=name.split(" ");return p.length>1?p[0][0]+p[p.length-1][0]:name.slice(0,2);return name.slice(0,2).toUpperCase()}
+function hashStr(s){let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0}return Math.abs(h)}
+function avatarColor(name){return AVATAR_COLORS[hashStr(name)%AVATAR_COLORS.length]}
+function logoFallbackColor(company){return AVATAR_COLORS[hashStr(company)%AVATAR_COLORS.length]}
+
+function matchSearch(entry,term){
+  if(!term)return true;
+  const t=term.toLowerCase();
+  if(entry.company.toLowerCase().includes(t))return true;
+  if(entry.seller.toLowerCase().includes(t))return true;
+  for(const c of entry.contacts){
+    if(c.name.toLowerCase().includes(t))return true;
+    if(c.title.toLowerCase().includes(t))return true;
+  }
+  for(const ctx of entry.context){
+    if(ctx.toLowerCase().includes(t))return true;
+  }
+  return false;
+}
+
+function matchFilters(entry){
+  if(activeSellers.size>0&&!activeSellers.has(entry.seller))return false;
+  if(activeFlags.size>0){
+    const hasFlag=entry.contacts.some(c=>{
+      const fk=flagKey(c.name,entry.company);
+      return flags[fk]&&activeFlags.has(flags[fk]);
+    });
+    if(!hasFlag)return false;
+  }
+  return matchSearch(entry,searchTerm);
+}
+
+function render(){
+  const container=document.getElementById("cards");
+  const emptyEl=document.getElementById("empty");
+  const statsEl=document.getElementById("stats");
+  let html="";
+  let companyCount=0,contactCount=0;
+  
+  for(const entry of DATA){
+    if(!matchFilters(entry))continue;
+    companyCount++;
+    contactCount+=entry.contacts.length;
+    
+    const sellerColor=SELLER_COLORS[entry.seller]||"#666";
+    const initials=getInitials(entry.company);
+    const fbColor=logoFallbackColor(entry.company);
+    
+    html+=`<div class="card">`;
+    html+=`<div class="card-header">`;
+    html+=`<div class="logo-wrap" id="logo-${entry.id}"><img src="https://logo.clearbit.com/${entry.domain}" alt="" onerror="this.parentElement.innerHTML='<div class=\\'logo-fallback\\' style=\\'background:${fbColor}\\'>${initials}</div>'"></div>`;
+    html+=`<div class="company-info"><div class="company-name">${entry.company}</div><span class="seller-badge" style="background:${sellerColor}">${entry.seller}</span></div>`;
+    html+=`</div>`;
+    
+    for(const c of entry.contacts){
+      const fk=flagKey(c.name,entry.company);
+      const flag=flags[fk]||null;
+      const flagClass=flag||"";
+      const flagIcon=flag?FLAG_ICONS[flag]:"&#9873;";
+      const ac=avatarColor(c.name);
+      const ci=getInitials(c.name);
+      
+      html+=`<div class="contact">`;
+      html+=`<div class="avatar" style="background:${ac}">${ci}</div>`;
+      html+=`<div class="contact-info"><div class="contact-name">${c.name}</div><div class="contact-title">${c.title}</div></div>`;
+      html+=`<div class="contact-actions">`;
+      if(c.linkedin){
+        html+=`<a href="${c.linkedin}" target="_blank" rel="noopener" class="li-btn" title="LinkedIn">in</a>`;
+      }
+      html+=`<button class="flag-btn ${flagClass}" data-key="${fk}" title="Flag contact">${flagIcon}</button>`;
+      html+=`</div></div>`;
+    }
+    
+    if(entry.context.length>0){
+      html+=`<div class="context-toggle" onclick="this.nextElementSibling.classList.toggle('collapsed')">&#9660; Context &amp; Talking Points</div>`;
+      html+=`<div class="context collapsed"><ul>`;
+      for(const ctx of entry.context){
+        html+=`<li>${ctx}</li>`;
+      }
+      html+=`</ul></div>`;
+    }
+    html+=`</div>`;
+  }
+  
+  container.innerHTML=html;
+  emptyEl.style.display=companyCount===0?"block":"none";
+  statsEl.textContent=`${companyCount} ${companyCount===1?"company":"companies"} \u00B7 ${contactCount} contacts`;
+  
+  container.querySelectorAll(".flag-btn").forEach(btn=>{
+    btn.addEventListener("click",function(e){
+      e.stopPropagation();
+      const key=this.dataset.key;
+      const current=flags[key]||null;
+      const idx=FLAG_CYCLE.indexOf(current);
+      const next=FLAG_CYCLE[(idx+1)%FLAG_CYCLE.length];
+      if(next){flags[key]=next}else{delete flags[key]}
+      saveFlags();
+      render();
+    });
+  });
+}
+
+document.getElementById("search").addEventListener("input",function(){
+  searchTerm=this.value.trim();
+  render();
+});
+
+document.querySelectorAll(".seller-chip").forEach(chip=>{
+  chip.addEventListener("click",function(){
+    const seller=this.dataset.seller;
+    if(activeSellers.has(seller)){activeSellers.delete(seller);this.classList.remove("active")}
+    else{activeSellers.add(seller);this.classList.add("active")}
+    render();
+  });
+});
+
+document.querySelectorAll(".flag-chip").forEach(chip=>{
+  chip.addEventListener("click",function(){
+    const flag=this.dataset.flag;
+    if(activeFlags.has(flag)){activeFlags.delete(flag);this.classList.remove("active")}
+    else{activeFlags.add(flag);this.classList.add("active")}
+    render();
+  });
+});
+
+document.getElementById("clearAll").addEventListener("click",function(){
+  activeSellers.clear();
+  activeFlags.clear();
+  searchTerm="";
+  document.getElementById("search").value="";
+  document.querySelectorAll(".chip.active").forEach(c=>c.classList.remove("active"));
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
